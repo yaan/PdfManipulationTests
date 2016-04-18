@@ -1,6 +1,7 @@
 ﻿using iTextSharp.text.pdf;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -95,9 +96,18 @@ namespace PdfManipulationTests.PasswordProtectPdf
             Console.WriteLine(string.Format("All done, you should now have a protected file called {0}", protectedFileName));
             Console.WriteLine();
 
-            Console.WriteLine("Press any key to exit");
+            Console.WriteLine("Press 1 to open the folder, or press any other key to exit");
 
-            Console.ReadKey();
+            var pressedKey = Console.ReadKey();
+
+            switch (pressedKey.KeyChar.ToString())
+            {
+                case ("1"):
+                    OpenDirectory(protectedFileName);
+                    break;
+                default:
+                    break;
+            }
         }
 
         #endregion
@@ -112,6 +122,17 @@ namespace PdfManipulationTests.PasswordProtectPdf
         private static bool IsFilePathValid(string filePath)
         {
             return (string.IsNullOrEmpty(filePath) || !File.Exists(filePath) || !filePath.EndsWith(".pdf")) ? false : true;
+        }
+
+        private static void OpenDirectory(string filePath)
+        {
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                ProcessStartInfo process = new ProcessStartInfo("explorer", "/select," + filePath);
+                process.UseShellExecute = true;
+
+                Process.Start(process);
+            }
         }
 
         #endregion
